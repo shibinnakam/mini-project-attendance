@@ -1,7 +1,7 @@
+// routes/attendanceRoutes.js
 import express from "express";
 import Attendance from "../models/Attendance.js";
 import Card from "../models/Card.js";
-import Staff from "../models/Staff.js";
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const attendanceData = await Attendance.find()
-      .populate("staff", "name email phone")
+      .populate("staffId", "name email phone")
       .sort({ inTime: -1 });
 
     res.render("attendance", { attendanceData });
@@ -27,7 +27,7 @@ router.post("/mark", async (req, res) => {
 
     console.log("📡 Received RFID UID:", cardUID);
 
-    // Find card in DB
+    // Find card and linked staff
     const card = await Card.findOne({ cardUID }).populate("staffId");
     if (!card) {
       console.log("❌ Card not found in DB!");
@@ -37,16 +37,13 @@ router.post("/mark", async (req, res) => {
     const staff = card.staffId;
     const today = new Date().toISOString().split("T")[0];
 
-    // Check if already has attendance record for today
-    let record = await Attendance.findOne({
-      staff: staff._id,
-      date: today,
-    });
+    // ✅ Find today's record
+    let record = await Attendance.findOne({ staffId: staff._id, date: today });
 
     if (!record) {
       // 🕒 Mark IN
       record = new Attendance({
-        staff: staff._id,
+        staffId: staff._id,
         cardUID,
         date: today,
         inTime: new Date(),
