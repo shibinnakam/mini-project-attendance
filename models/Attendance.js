@@ -1,20 +1,25 @@
+// models/Attendance.js
 import mongoose from "mongoose";
 
 const attendanceSchema = new mongoose.Schema(
   {
     staffId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Staff", // ✅ must match the model name in models/Staff.js
+      ref: "Staff", // 👈 This must match the model name in Staff.js
       required: true,
     },
     cardUID: {
       type: String,
       required: true,
     },
-    checkInTime: {
+    date: {
+      type: String, // Example: "2025-10-27"
+      required: true,
+    },
+    inTime: {
       type: Date,
     },
-    checkOutTime: {
+    outTime: {
       type: Date,
     },
   },
