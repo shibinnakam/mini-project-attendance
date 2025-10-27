@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Attendance Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        padding: 40px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background: #2563eb;
+        color: white;
+      }
+      tr:hover {
+        background: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Attendance Dashboard</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>In Time</th>
+          <th>Out Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% attendanceData.forEach(record => { %>
+          <tr>
+            <td><%= record.staff?.name || "N/A" %></td>
+            <td><%= record.staff?.email || "N/A" %></td>
+            <td><%= record.staff?.phone || "N/A" %></td>
+            <td><%= new Date(record.inTime).toLocaleString() %></td>
+            <td><%= record.outTime ? new Date(record.outTime).toLocaleString() : "—" %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>

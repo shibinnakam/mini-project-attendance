@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add RFID Card</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        padding: 50px;
+      }
+      .container {
+        max-width: 500px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin: auto;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+      button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      .message {
+        margin-top: 10px;
+        font-weight: bold;
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Assign RFID Card</h2>
+
+      <form method="POST" action="/api/cards/add">
+        <label for="staffId">Select Staff:</label>
+        <select name="staffId" required>
+          <option value="">-- Select Staff --</option>
+          <% staffList.forEach(staff => { %>
+            <option value="<%= staff._id %>">
+              <%= staff.name %> - <%= staff.email %>
+            </option>
+          <% }); %>
+        </select>
+
+        <label for="cardUID">Enter Card UID:</label>
+        <input type="text" name="cardUID" placeholder="Scan or enter card UID" required />
+
+        <button type="submit">Save Card</button>
+      </form>
+
+      <% if (message) { %>
+        <div class="message"><%= message %></div>
+      <% } %>
+    </div>
+  </body>
+</html>
