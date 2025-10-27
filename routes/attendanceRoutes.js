@@ -2,6 +2,7 @@
 import express from "express";
 import Attendance from "../models/Attendance.js";
 import Card from "../models/Card.js";
+import Staff from "../models/Staff.js";
 
 const router = express.Router();
 
@@ -27,17 +28,23 @@ router.post("/mark", async (req, res) => {
 
     console.log("📡 Received RFID UID:", cardUID);
 
-    // Find card and linked staff
-    const card = await Card.findOne({ cardUID }).populate("staffId");
+    // 🧩 Step 1: Find card (without populate to avoid StrictPopulateError)
+    const card = await Card.findOne({ cardUID });
     if (!card) {
       console.log("❌ Card not found in DB!");
       return res.status(404).json({ error: "Card not registered" });
     }
 
-    const staff = card.staffId;
+    // 🧩 Step 2: Fetch the linked staff manually
+    const staff = await Staff.findById(card.staffId);
+    if (!staff) {
+      console.log("❌ No staff found for this card:", cardUID);
+      return res.status(404).json({ error: "Staff not linked with card" });
+    }
+
     const today = new Date().toISOString().split("T")[0];
 
-    // ✅ Find today's record
+    // 🧩 Step 3: Check if there's already a record for today
     let record = await Attendance.findOne({ staffId: staff._id, date: today });
 
     if (!record) {
